@@ -6,44 +6,49 @@ namespace SearchEngine
 {
     public class Loader
     {
-        public Loader()
-        {
-        }
 
-        public static List<Blog> LoadBlogs(List<String> wordslist)
+        public static void ReadDirectory(String path, PageDB pageDB)
         {
-            List<Blog> blogs = new List<Blog>();
 
-            using (var reader = new StreamReader("blogdata.txt"))
+            if (Directory.Exists(path))
             {
-                string firstLine = reader.ReadLine();
-                string[] words = firstLine.Split('\t');
-
-                wordsList = new string[words.Length - 1];
-
-                for (int i = 1; i < words.Length; i++)
+                string[] fileEntries = Directory.GetFiles(path);
+                foreach (string fileName in fileEntries)
                 {
-                    wordsList[i - 1] = words[i];
+                    Page page = new Page();
+                    page.url = fileName;
+                    page.words = ProcessWords(fileName, pageDB);
+                    pageDB.pages.Add(page);
                 }
 
+            }
+            else
+            {
+                Console.WriteLine("{0} is not a valid file or directory.", path);
+            }
+
+        }
+
+
+        public static List<int> ProcessWords(string fileName, PageDB pageDB)
+        {
+            List<int> wordList = new List<int>();
+
+            using (var reader = new StreamReader(fileName))
                 while (!reader.EndOfStream)
                 {
                     var line = reader.ReadLine();
-                    var values = line.Split('\t');
+                    var words = line.Split(' ');
 
-                    Blog b = new Blog();
-                    b.title = values[0];
-                    for (int i = 1; i < values.Length; i++)
+                    foreach (String word in words)
                     {
-                        Word newWord = new Word();
-                        newWord.word = words[i];
-                        newWord.count = Int32.Parse(values[i]);
-                        b.words.Add(newWord);
+                        int hashCode = word.GetHashCode();
+
+                        if (!pageDB.wordToId.ContainsKey(word)) { pageDB.wordToId.Add(word, hashCode); }
+                        wordList.Add(hashCode);
                     }
-                    blogs.Add(b);
                 }
-            }
-            return blogs;
+            return wordList;
         }
 
     }

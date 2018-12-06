@@ -2,21 +2,26 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Cluster
+namespace SearchEngine
 {
     class Program
     {
 
         static PageDB pageDB = new PageDB();
         static String path = "Wikipedia/Words/Games";
+        static String path2 = "Wikipedia/Words/Programming";
 
         static void Main(string[] args)
         {
             ReadDirectory(path);
+            ReadDirectory(path2);
 
-            List<Score> results = Query("computer");
+            List<Score> results = Query("nintendo");
 
-            Console.WriteLine("");
+            for (int i = 0; i < 5; i++){
+                Console.WriteLine(results[i].p.url+" "+results[i].score);   
+            }
+
         }
 
 
@@ -30,12 +35,12 @@ namespace Cluster
             {
                 Page p = pageDB.pages[i];
                 scores.content.Add(GetFrequencyScore(p, query));
-              //  scores.location.Add(GetLocationScore(p, query));
+              //  scores.location.Add(Scorer.GetLocationScore(p, query));
             }
 
             //Normalize scores
             Normalize(scores.content, false);
-        //    Normalize(scores.location, true);
+          //  Normalize(scores.location, true);
 
             //Generate result list
             for (int i = 0; i < pageDB.pages.Count; i++)
@@ -48,6 +53,29 @@ namespace Cluster
             Sort(result);
             //Return result list
            return result;
+        }
+
+        public static double GetFrequencyScore(Page page, String query)
+        {
+            //          1. Declare a score variable and set it to 0
+            //2. Split the search query into a list of words
+            //3. For each word in the query:
+            //1. Convert the word string to an id integer
+            //2. For each Page:
+            //1. For each Word in the page:
+            //1. Increase score by 1 if the current word id matches the query word id
+            //4. Return the score 
+            double score = 0;
+            var words = query.Split(" ");
+            foreach (String s in words)
+            {
+                int id = s.GetHashCode();
+                foreach (int i in page.words)
+                {
+                    if (id == i) { score++; }
+                }
+            }
+            return score;
         }
 
         static void Normalize(List<Double> scores, bool smallIsBetter)
@@ -105,32 +133,6 @@ namespace Cluster
             result.Sort((x, y) => y.score.CompareTo(x.score));
         }
 
-        static double GetFrequencyScore(Page page, String query)
-        {
-            //          1. Declare a score variable and set it to 0
-            //2. Split the search query into a list of words
-            //3. For each word in the query:
-             //1. Convert the word string to an id integer
-                 //2. For each Page:
-                     //1. For each Word in the page:
-                         //1. Increase score by 1 if the current word id matches the query word id
-            //4. Return the score 
-            double score = 0;
-            var words = query.Split(" ");
-            foreach(String s in words){
-                int id = s.GetHashCode();
-                foreach(int i in page.words){
-                    if (id == i) { score++; }
-                }
-            }
-            return score; 
-        }
-
-        static double GetLocationScore(Page page, String query)
-        {
-            return 3.2;
-        }
-
 
         private static void ReadDirectory(String path)
         {
@@ -183,7 +185,7 @@ namespace Cluster
 
     }
 
-    class Score
+    public class Score
     {
 
         public Score(Page page, Double score){
@@ -195,19 +197,19 @@ namespace Cluster
         public Double score;
     }
 
-    class Scores
+    public class Scores
     {
         public List<double> content= new List<double>();
         public List<double> location = new List<double>();
     }
 
-    class PageDB
+    public class PageDB
     {
         public Dictionary<String, int> wordToId = new Dictionary<string, int>();
         public List<Page> pages = new List<Page>();
     }
 
-    class Page
+    public class Page
     {
         public String url;
         public List<int> words; 

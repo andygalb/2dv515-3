@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Loader.cs" />
     <Compile Remove="ClusteringClasses.cs" />
     <Compile Remove="Hierarchical.cs" />
     <Compile Remove="KMean.cs" />
