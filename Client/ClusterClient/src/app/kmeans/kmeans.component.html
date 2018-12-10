@@ -1,0 +1,34 @@
+<mat-grid-list cols="2" rowHeight="fit" class="content">
+
+  <mat-grid-tile>
+    <div *ngIf="centroids">
+
+      <mat-expansion-panel  *ngFor="let cluster of centroids;  index as i" >
+        <mat-expansion-panel-header>
+          <mat-panel-title>Cluster {{i+1}}</mat-panel-title>
+          <mat-panel-description>
+            n=100
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <span *ngFor="let assignment of cluster.assignments">{{assignment.title}}.    </span>
+      </mat-expansion-panel>
+    </div>
+  </mat-grid-tile>
+
+
+
+  <mat-grid-tile>
+    <div *ngIf="haltCentroids">
+      <mat-expansion-panel  *ngFor="let cluster of haltCentroids;  index as i" >
+        <mat-expansion-panel-header>
+          <mat-panel-title>Cluster {{i+1}}</mat-panel-title>
+          <mat-panel-description>
+            Self-halting
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <span *ngFor="let assignment of cluster.assignments">{{assignment.title}}.    </span>
+      </mat-expansion-panel>
+    </div>
+  </mat-grid-tile>
+
+</mat-grid-list>

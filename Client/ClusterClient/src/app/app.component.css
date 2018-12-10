@@ -1,0 +1,11 @@
+.spacer {
+  flex: 1 1 auto;
+  margin:0 10px;
+}
+
+.content{height:100vh;}
+router-outlet{height:100vh;}
+
+a{text-decoration:none;}
+a:visited {text-decoration: none; color:white;}
+

@@ -56,7 +56,7 @@ namespace SearchEngine
         public static List<String> ProcessLinks(string fileName, PageDB pageDB)
         {
             List<String> linkList = new List<String>();
-
+            if (!File.Exists(fileName)){ return new List<string>(); }
             using (var reader = new StreamReader(fileName))
                 while (!reader.EndOfStream)
                 {
