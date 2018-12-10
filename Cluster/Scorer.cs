@@ -3,6 +3,8 @@ namespace SearchEngine
 {
     public class Scorer
     {
+
+        static int MAX_ITERATIONS = 10;
        
         public static double GetFrequencyScore(Page page, String query)
         {
@@ -24,6 +26,7 @@ namespace SearchEngine
                     if (id == i) { score++; }
                 }
             }
+
             return score;
         }
 
@@ -53,7 +56,36 @@ namespace SearchEngine
             return score;
         }
 
+        public static void PageRank(PageDB pageDB)
+        {
+            //Iterate over all pages for a number of iterations
 
+            for (int i = 0; i < MAX_ITERATIONS; i++)
+                foreach (Page p in pageDB.pages)
+            {
+                iteratePR(p, pageDB);
+            }
+        }
+        //Calculate page rank value for a page
+
+        public static void iteratePR(Page p, PageDB pageDB)
+        {
+
+            //Calculate page rank value
+            double pr = 0;
+            foreach (Page po in pageDB.pages)
+            {
+                if (po.HasLinkTo(p))
+                {
+                    //Sum of all pages
+                    pr += po.pageRank / po.links.Count;
+                }
+
+                //Calculate PR
+                p.pageRank = 0.85 * pr + 0.15;
+            }
+
+        }
 
     }
 }

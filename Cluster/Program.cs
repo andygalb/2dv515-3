@@ -9,17 +9,22 @@ namespace SearchEngine
 
         static PageDB pageDB = new PageDB();
         static String path = "Wikipedia/Words/Games";
+        static String linksPath = "Wikipedia/Links/Games";
         static String path2 = "Wikipedia/Words/Programming";
+        static String linksPath2 = "Wikipedia/Links/Programmning";
 
         static void Main(string[] args)
         {
-            ReadDirectory(path);
-            ReadDirectory(path2);
+            Loader.ReadDirectory(path, linksPath,pageDB);
+            Loader.ReadDirectory(path2, linksPath2, pageDB);
+
+
+            Scorer.PageRank(pageDB);
 
             List<Score> results = Query("nintendo");
 
             for (int i = 0; i < 5; i++){
-                Console.WriteLine(results[i].p.url+" "+results[i].score);   
+                Console.WriteLine(results[i].p.url+" "+results[i].score+" " + results[i].contentScore+ " " + results[i].locationScore +" " + results[i].p.pageRank);   
             }
 
         }
@@ -35,11 +40,14 @@ namespace SearchEngine
             {
                 Page p = pageDB.pages[i];
                 scores.content.Add(GetFrequencyScore(p, query));
-              //  scores.location.Add(Scorer.GetLocationScore(p, query));
+                scores.pageRank.Add(p.pageRank);
+                scores.location.Add(Scorer.GetLocationScore(p, query));
             }
 
             //Normalize scores
             Normalize(scores.content, false);
+            Normalize(scores.location, true);
+            Normalize(scores.pageRank, false);
           //  Normalize(scores.location, true);
 
             //Generate result list
@@ -47,7 +55,7 @@ namespace SearchEngine
             {
                 Page p = pageDB.pages[i];
                 Double score = 1.0 * scores.content[i]; //+ 0.5 * scores.location[i];
-                result.Add(new Score(p, score));
+                result.Add(new Score(p, scores.content[i],scores.location[i],scores.pageRank[i],score));
             }
             //Sort result list with highest score first
             Sort(result);
@@ -193,14 +201,27 @@ namespace SearchEngine
             this.score = score;
         }
 
+        public Score(Page page, Double contentScore, Double locationScore, Double pageRankScore, Double score)
+        {
+            this.p = page;
+            this.score = score;
+            this.contentScore = score;
+            this.locationScore = score;
+            this.pageRankScore = pageRankScore;
+        }
+
         public Page p;
         public Double score;
+        public Double contentScore;
+        public Double locationScore;
+        public Double pageRankScore;
     }
 
     public class Scores
     {
         public List<double> content= new List<double>();
         public List<double> location = new List<double>();
+        public List<double> pageRank = new List<double>();
     }
 
     public class PageDB
@@ -212,7 +233,18 @@ namespace SearchEngine
     public class Page
     {
         public String url;
-        public List<int> words; 
+        public double pageRank = 1.0;
+        public double contentScore = 0;
+        public double locationScore = 0;
+        public List<int> words;
+        public List<String> links;
+
+        public bool HasLinkTo(Page p){
+            var urlArray= p.url.Split("/");
+            var linkTitle = "/wiki/" + urlArray[urlArray.Length - 1];
+            if (links.Contains(linkTitle)) return true;
+            else return false;
+        }
     }
 }
 

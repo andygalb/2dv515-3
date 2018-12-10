@@ -7,24 +7,26 @@ namespace SearchEngine
     public class Loader
     {
 
-        public static void ReadDirectory(String path, PageDB pageDB)
+        public static void ReadDirectory(String wordsPath, string LinksPath, PageDB pageDB)
         {
 
-            if (Directory.Exists(path))
+            if (Directory.Exists(wordsPath))
             {
-                string[] fileEntries = Directory.GetFiles(path);
+                string[] fileEntries = Directory.GetFiles(wordsPath);
                 foreach (string fileName in fileEntries)
                 {
                     Page page = new Page();
                     page.url = fileName;
                     page.words = ProcessWords(fileName, pageDB);
+                    string newString=fileName.Replace("Words", "Links");
+                    page.links = ProcessLinks(newString, pageDB);
                     pageDB.pages.Add(page);
                 }
 
             }
             else
             {
-                Console.WriteLine("{0} is not a valid file or directory.", path);
+                Console.WriteLine("{0} is not a valid file or directory.", wordsPath);
             }
 
         }
@@ -49,6 +51,21 @@ namespace SearchEngine
                     }
                 }
             return wordList;
+        }
+
+        public static List<String> ProcessLinks(string fileName, PageDB pageDB)
+        {
+            List<String> linkList = new List<String>();
+
+            using (var reader = new StreamReader(fileName))
+                while (!reader.EndOfStream)
+                {
+                    var line = reader.ReadLine();
+                        linkList.Add(line);
+                    
+                }
+
+            return linkList;
         }
 
     }
