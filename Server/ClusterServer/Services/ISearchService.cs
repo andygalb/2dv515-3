@@ -7,7 +7,9 @@ namespace SearchServer.Services
 {
    public interface ISearchService
     {
-        List<Blog> GetBlogs();
-      
+        List<ShortenedScore> Search(string query);
+        List<ShortenedScore> SearchFrequency(string query);
+        List<ShortenedScore> SearchFrequencyLocation(string query);
+
     }
 }

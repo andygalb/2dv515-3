@@ -6,51 +6,70 @@ namespace SearchServer
 {
     public class Loader
     {
-        String[] wordsList;
-        public Loader()
-        {
-          
-        }
+        String path = @"Wikipedia\Words\Games";
+        String linksPath = @"Wikipedia\Links\Games";
+        String path2 = @"Wikipedia\Words\Programming";
+        String linksPath2 = @"Wikipedia\Links\Programming";
 
-        public String[] GetWordsList()
+        public void ReadDirectory(String wordsPath, PageDB pageDB)
         {
-            return wordsList;
-        }
 
-        public List<Blog> LoadBlogs(String file)
-        {
-            List<Blog> blogs = new List<Blog>();
-
-            using (var reader = new StreamReader(file))
+            if (Directory.Exists(wordsPath))
             {
-                string firstLine = reader.ReadLine();
-                string[] words = firstLine.Split('\t');
-
-                wordsList = new string[words.Length - 1];
-
-                for (int i = 1; i < words.Length; i++)
+                string[] fileEntries = Directory.GetFiles(wordsPath);
+                foreach (string fileName in fileEntries)
                 {
-                    wordsList[i - 1] = words[i];
+                    Page page = new Page();
+                    page.url = fileName;
+                    page.words = ProcessWords(fileName, pageDB);
+                    string newString=fileName.Replace("Words", "Links");
+                    page.links = ProcessLinks(newString, pageDB);
+                    pageDB.pages.Add(page);
                 }
 
+            }
+            else
+            {
+                Console.WriteLine("{0} is not a valid file or directory.", wordsPath);
+            }
+
+        }
+
+
+        public List<int> ProcessWords(string fileName, PageDB pageDB)
+        {
+            List<int> wordList = new List<int>();
+
+            using (var reader = new StreamReader(fileName))
                 while (!reader.EndOfStream)
                 {
                     var line = reader.ReadLine();
-                    var values = line.Split('\t');
+                    var words = line.Split(' ');
 
-                    Blog b = new Blog();
-                    b.title = values[0];
-                    for (int i = 1; i < values.Length; i++)
+                    foreach (String word in words)
                     {
-                        Word newWord = new Word();
-                        newWord.word = words[i];
-                        newWord.count = Int32.Parse(values[i]);
-                        b.words.Add(newWord);
+                        int hashCode = word.GetHashCode();
+
+                        if (!pageDB.wordToId.ContainsKey(word)) { pageDB.wordToId.Add(word, hashCode); }
+                        wordList.Add(hashCode);
                     }
-                    blogs.Add(b);
                 }
-            }
-            return blogs;
+            return wordList;
+        }
+
+        public  List<String> ProcessLinks(string fileName, PageDB pageDB)
+        {
+            List<String> linkList = new List<String>();
+            if (!File.Exists(fileName)){ return new List<string>(); }
+            using (var reader = new StreamReader(fileName))
+                while (!reader.EndOfStream)
+                {
+                    var line = reader.ReadLine();
+                        linkList.Add(line);
+                    
+                }
+
+            return linkList;
         }
 
     }

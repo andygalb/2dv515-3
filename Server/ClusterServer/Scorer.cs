@@ -1,12 +1,12 @@
 ﻿using System;
-namespace SearchEngine
+namespace SearchServer
 {
     public class Scorer
     {
 
         static int MAX_ITERATIONS = 10;
        
-        public static double GetFrequencyScore(Page page, String query)
+        public double GetFrequencyScore(Page page, String query)
         {
            
             double score = 0;
@@ -24,7 +24,7 @@ namespace SearchEngine
         }
 
 
-        public static double GetLocationScore(Page page, String query)
+        public double GetLocationScore(Page page, String query)
         {
            
             double score = 0;
@@ -46,7 +46,7 @@ namespace SearchEngine
             return score;
         }
 
-        public static void PageRank(PageDB pageDB)
+        public void PageRank(PageDB pageDB)
         {
             //Iterate over all pages for a number of iterations
 
@@ -60,7 +60,7 @@ namespace SearchEngine
         }
         //Calculate page rank value for a page
 
-        public static void iteratePR(Page p, PageDB pageDB)
+        public void iteratePR(Page p, PageDB pageDB)
         {
 
             //Calculate page rank value

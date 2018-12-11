@@ -25,7 +25,7 @@ namespace SearchServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddScoped<ISearchService, SearchService>();
+            services.AddSingleton<ISearchService> (new SearchService());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

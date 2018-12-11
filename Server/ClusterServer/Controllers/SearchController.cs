@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace SearchServer.Controllers
 {
-    [Route("api/cluster")]
+    [Route("api/search")]
     public class SearchController : Controller
     {
         ISearchService searchService;
@@ -14,19 +14,33 @@ namespace SearchServer.Controllers
             this.searchService = cs;
         }
 
-
-        // GET api/values
-        [HttpGet]
-        public ActionResult Get()
+        [HttpGet("{query}")]
+        public ActionResult Search(string query)
         {
-            return Json(searchService.GetBlogs());
+            string cleaned = CleanString(query);
+            return Json(searchService.Search(cleaned));
         }
 
-        [HttpGet("blogs")]
-        public ActionResult GetBlogs()
+        [HttpGet("frequency/{query}")]
+        public ActionResult SearchFrequency(string query)
         {
-            return Json(searchService.GetBlogs());
+            string cleaned=CleanString(query);
+            return Json(searchService.SearchFrequency(cleaned));
         }
-    
+
+        [HttpGet("frequencylocation/{query}")]
+        public ActionResult SearchFrequencyAndLocation(string query)
+        {
+            string cleaned = CleanString(query);
+            return Json(searchService.SearchFrequencyLocation(cleaned));
+        }
+
+        private string CleanString(string dirty)
+        {
+            string clean1=dirty.Replace("+", " ");
+            string clean2 = dirty.Replace("%20", " ");
+            return clean2;
+        }
+
     }
 }
