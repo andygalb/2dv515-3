@@ -1,0 +1,19 @@
+.content{height:100vh;}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-container > * {
+  width: 50%;
+  margin:0 auto;
+}
+
+.form-container {
+  margin:100px auto;
+}
+
+table {
+  width: 100%;
+}

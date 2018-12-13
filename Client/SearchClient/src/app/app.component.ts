@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {DataService, Centroid, Cluster} from './data.service';
+import {DataService} from './data.service';
 
 
 @Component({
@@ -9,10 +9,7 @@ import {DataService, Centroid, Cluster} from './data.service';
 })
 export class AppComponent implements OnInit {
 
-  title = 'Cluster';
-  centroids: Centroid[];
-  haltCentroids: Centroid[];
-  clusters: Cluster[];
+  title = 'SearchEngine';
 
   ngOnInit(): void {
   }

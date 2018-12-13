@@ -39,7 +39,8 @@ namespace SearchServer.Controllers
         {
             string clean1=dirty.Replace("+", " ");
             string clean2 = dirty.Replace("%20", " ");
-            return clean2;
+            string lowerCase = clean2.ToLower();
+            return lowerCase;
         }
 
     }

@@ -9,17 +9,16 @@ import { HttpClientModule } from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {
   MatToolbarModule, MatSelectModule, MatGridListModule, MatCardModule,
-  MatExpansionModule
+  MatExpansionModule, MatRadioModule, MatInputModule, MatTableModule
 } from '@angular/material';
 import {RouterModule, Routes} from "@angular/router";
-import { HierarchicalComponent } from './hierarchical/hierarchical.component';
-import { KmeansComponent } from './kmeans/kmeans.component';
+import { SearchComponent } from './search/search.component';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import {FormsModule} from "@angular/forms";
 
 const appRoutes: Routes = [
-  { path: '',   redirectTo: '/kmeans', pathMatch: 'full' },
-  { path: 'hierarchical', component: HierarchicalComponent },
-  { path: 'kmeans', component: KmeansComponent },
+  { path: '',   redirectTo: '/search', pathMatch: 'full' },
+  { path: 'search', component: SearchComponent },
 ];
 
 
@@ -27,16 +26,19 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     HomeComponent,
-    HierarchicalComponent,
-    KmeansComponent,
+    SearchComponent,
   ],
   imports: [
     NgxJsonViewerModule,
     BrowserModule,
+    FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
     MatExpansionModule,
+    MatTableModule,
     MatToolbarModule,
+    MatInputModule,
+    MatRadioModule,
     MatSelectModule,
     MatGridListModule,
     MatCardModule,
