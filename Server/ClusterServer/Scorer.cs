@@ -27,23 +27,26 @@ namespace SearchServer
         public double GetLocationScore(Page page, String query)
         {
            
-            double score = 0;
+            double totalScore = 0;
             var queries = query.Split(" ");
             foreach (String s in queries)
             {
+                int partScore = 0;
                 int hash = s.GetHashCode();
                 for (int j=0; j<page.words.Count; j++)
                 {
                     if (page.words[j] == hash)
                     {
-                        score += j+1;
+                        partScore += j+1;
                         break;
                     }
                     
                 }
-                if (score == 0) { score += 100000; }
+                if (partScore == 0) { totalScore += 1000000; }
+                else { totalScore += partScore; }
             }
-            return score;
+           
+            return totalScore;
         }
 
         public void PageRank(PageDB pageDB)
